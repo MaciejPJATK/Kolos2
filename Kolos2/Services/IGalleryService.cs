@@ -6,5 +6,5 @@ public interface IGalleryService
 {
     Task<GalleryDto> GetGalleryExhibitionsAsync(int galleryid, CancellationToken token);
     
-    // Task AddCustomerWithTicketsAsync(InsertCustomerWithTicketsRequest request, CancellationToken token);
+    Task AddExhibitionAsync(NewExhibitionRequest request, CancellationToken token);
 }

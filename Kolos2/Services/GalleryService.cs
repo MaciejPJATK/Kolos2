@@ -15,7 +15,7 @@ public class GalleryService : IGalleryService
     public async Task<GalleryDto> GetGalleryExhibitionsAsync(int galleryId, CancellationToken token)
     {
         var gallery = await _context.Galleries
-            .Include(g => g.Exhibitions)
+            .Include(g => g.Exhibitions)!
             .ThenInclude(e => e.ExhibitionArtworks)
             .ThenInclude(ea => ea.Artwork)
             .ThenInclude(a => a.Artist)
@@ -50,6 +50,38 @@ public class GalleryService : IGalleryService
             }).ToList()
         };
     }
+    public async Task AddExhibitionAsync(NewExhibitionRequest request, CancellationToken token)
+    {
+        var gallery = await _context.Galleries
+            .FirstOrDefaultAsync(g => g.Name == request.Gallery, token);
+
+        if (gallery == null)
+            throw new NotFoundException($"Gallery '{request.Gallery}' not found");
+
+        var artworks = await _context.Artworks
+            .Where(a => request.Artworks.Select(x => x.ArtworkId).Contains(a.ArtworkId))
+            .ToListAsync(token);
+
+        if (artworks.Count != request.Artworks.Count)
+            throw new NotFoundException("One or more artworks not found");
+
+        var exhibition = new Exhibition
+        {
+            Title = request.Title,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            GalleryId = gallery.GalleryId,
+            ExhibitionArtworks = request.Artworks.Select(x => new ExhibitionArtwork
+            {
+                ArtworkId = x.ArtworkId,
+                InsuranceValue = x.InsuranceValue
+            }).ToList()
+        };
+
+        _context.Exhibitions.Add(exhibition);
+        await _context.SaveChangesAsync(token);
+    }
+
 }
 
 

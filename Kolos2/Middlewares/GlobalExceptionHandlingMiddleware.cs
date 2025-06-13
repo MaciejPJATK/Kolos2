@@ -61,3 +61,17 @@ public static class GlobalExceptionHandlingMiddlewareExtensions
         return builder.UseMiddleware<GlobalExceptionHandlingMiddleware>();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

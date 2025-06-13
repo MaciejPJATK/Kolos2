@@ -21,10 +21,10 @@ public class GalleryController : ControllerBase
         return Ok(response);
     }
 
-    // [HttpPost("api/exhibitions")]
-    // public async Task<IActionResult> AddCustomerWithTickets([FromBody] InsertCustomerWithTicketsRequest request, CancellationToken token)
-    // {
-    //     await _galleryService.AddCustomerWithTicketsAsync(request, token);
-    //     return StatusCode(201);
-    // }
+    [HttpPost("api/exhibitions")]
+    public async Task<IActionResult> AddExhibition([FromBody] NewExhibitionRequest request, CancellationToken token)
+    {
+        await _galleryService.AddExhibitionAsync(request, token);
+        return StatusCode(201);
+    }
 }
